@@ -1,0 +1,12 @@
+
+body{
+  background-color: #abb2b6;
+}
+
+
+
+container-logo{
+  justify-content: space-between;
+  margin-top: 20rem;
+  width: 100%;
+}

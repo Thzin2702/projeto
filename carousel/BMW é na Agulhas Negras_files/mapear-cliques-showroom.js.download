@@ -1,0 +1,193 @@
+let valueToSend = ""
+
+//Função para setar valor do snnipet a ser enviado
+function setSnnipet(snnipetValue) {
+    valueToSend = snnipetValue
+    console.log("Setou o valor do snnipet")
+}
+
+
+// Função para os links de telefone
+function gtag_report_click_phones(local) {
+    console.log("click_phone_" + local)
+
+    if (local) {
+        ga('send', 'event', 'click_phone_' + local, 'click', {
+            'send_to': 'UA-131492942-2'
+        });
+    }
+
+    return false;
+}
+
+// Função para banners
+function gtag_report_click_banner(name) {
+    ga('send', 'event', 'click_banner_' + name, 'click', {
+        'send_to' : 'UA-131492942-2'
+    });
+    console.log('click_banner_' + name)
+}
+
+// Funcção para os links de WhatsApp
+function gtag_report_click_wpp(local) {
+    if(valueToSend != "") {
+        console.log("Evento enviado: " + valueToSend)
+        //Event snippet for [DDM] - Whatsapp conversion page
+        gtag('event', 'conversion', {'send_to': `${valueToSend}`});
+    } 
+  
+    if (local) {
+        console.log("Evento enviado: " + "click_whatsapp_" + local)
+        ga('send', 'event', 'click_whatsapp_' + local, 'click', {
+            'send_to': 'UA-131492942-2'
+        });
+    }
+  
+    return false;
+}
+
+function gtag_report_click_popup() {
+    console.log("clique popup")
+   
+    ga('send', 'event', 'click_popup_home', 'click', {
+        'send_to' : 'UA-131492942-2'
+    });
+  
+}
+
+
+(() => {
+    // Coleta e monitora o popup da home
+    const popup = document.querySelector(".channel-pop-up__image")
+
+    if(popup) {
+        popup.addEventListener('click', () => {
+            gtag_report_click_popup()
+        })
+    }
+
+
+    // Coleta e monitora os banners da home
+    const banners = document.querySelectorAll(".swiper-slide__link")
+
+    if(banners) {
+        for (let i = 0; i < banners.length; i++) {
+            let altImg = banners[i].querySelector("img").getAttribute("alt")
+            altImg = altImg.trim().replace(/ /gi, "_");
+            altImg = altImg.replace(/-/gi, "_");
+            altImg = altImg.replace(/__/gi, "");
+            altImg = altImg.replace(/___/gi, "");
+            altImg = altImg.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase()
+            banners[i].addEventListener('click', () => {
+                gtag_report_click_banner(altImg)
+            })
+        }
+    }
+   
+
+    // Coleta e monitora os links de telefone e whatsapp do header
+    document.addEventListener('readystatechange', event => {
+        if (event.target.readyState === "complete") {
+            // Telefones
+            const linksPhoneHeader = document.querySelectorAll('.card-collapse__phone-link')
+            const linksPhoneHeaderMobile = document.querySelectorAll('.header-mobile__phone-link')
+
+            if (linksPhoneHeader) {
+                linksPhoneHeader.forEach(element => {
+                    element.addEventListener('click', () => {
+                        let local = element.querySelector("strong").innerText
+                        local = local.trim()
+                        local = local.replace(/ /g, "_")
+                        local = local.replace(":", "")
+                        local = local.replace("-", "_")
+                        local = local.toLowerCase()
+                        gtag_report_click_phones(local)
+                    })
+                });
+            }
+
+            if (linksPhoneHeaderMobile) {
+                linksPhoneHeaderMobile.forEach(element => {
+                    element.addEventListener('click', () => {
+                        let local = element.querySelector("strong").innerText
+                        local = local.trim()
+                        local = local.replace(/ /g, "_")
+                        local = local.replace(":", "")
+                        local = local.replace("-", "_")
+                        local = local.toLowerCase()
+                        gtag_report_click_phones(local)
+                    })
+                });
+            }
+
+
+            // Whatsapp
+            const wppBtn = document.querySelectorAll('.header-mobile__whatsapp-link')
+            const wppNewVehicles = document.querySelector(".vehicles-new__button-whatsapp")
+            const wppPopup = document.querySelector("#popup-whats")
+            const wppDropup = document.querySelectorAll(".dropup .dropdown-item")
+            const wppInternNovos = document.querySelector("#new-vehicles-showcase_cta-box-button")
+            const wppInternOfertas = document.querySelector("#modal-whatsapp-button")
+            const wppEspecialistaOnline = document.querySelector(".text-calls-chat-online__button-whatsapp")
+            const wppInternaSeminovos = document.querySelector("#used-vehicles-showcase_cta-box-button")
+           
+            if(wppBtn) {
+                wppBtn.forEach(button => {
+                    button.addEventListener('click', () => {
+                        let local = button.querySelector("strong").innerText
+                        local = local.trim()
+                        local = local.replace(/ /g, "_")
+                        local = local.replace(":", "")
+                        local = local.replace("-", "_")
+                        local = local.toLowerCase()
+                        gtag_report_click_wpp(local)
+                    })
+                })
+            }
+
+            if(wppNewVehicles) {
+                wppNewVehicles.addEventListener('click', () => {
+                    gtag_report_click_wpp("carrossel_novos")
+                })
+            }
+
+            if(wppPopup){
+                wppPopup.addEventListener('click', () => {
+                    gtag_report_click_wpp("flutuante")
+                })
+            }
+
+            if(wppDropup){
+                wppDropup.forEach(element => {
+                    element.addEventListener('click', () => {
+                        gtag_report_click_wpp("flutuante")
+                    })
+                });
+            }
+
+            if(wppInternNovos){
+                wppInternNovos.addEventListener('click', () => {
+                    gtag_report_click_wpp("interna_novos")
+                })
+            }
+
+            if(wppInternOfertas){
+                wppInternOfertas.addEventListener('click', () => {
+                    gtag_report_click_wpp("interna_ofertas")
+                })
+            }
+
+            if(wppEspecialistaOnline) {
+                wppEspecialistaOnline.addEventListener('click', () => {
+                    gtag_report_click_wpp("especialista_online")
+                })
+            }
+
+            if(wppInternaSeminovos) {
+                wppInternaSeminovos.addEventListener('click', () => {
+                    gtag_report_click_wpp("interna_seminovos")
+                })
+            }
+        }
+    });
+})();
